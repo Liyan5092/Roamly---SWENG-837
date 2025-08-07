@@ -1,0 +1,62 @@
+@startuml
+title Roamly - Component Diagram
+
+skinparam componentStyle rectangle
+skinparam linetype ortho
+skinparam defaultTextAlignment center
+skinparam wrapWidth 200
+
+' ==== LAYERS ====
+
+package "Client Interface Layer" {
+  [Mobile App (.NET MAUI)] <<component>>
+  [Web App (Blazor)] <<component>>
+}
+
+package "API Layer" {
+  [API Gateway] <<component>>
+}
+
+package "Application Layer" {
+  [UserProfileService] <<component>>
+  [ItineraryService] <<component>>
+  [ExportService] <<component>>
+  [FeedbackService] <<component>>
+  [AIItineraryEngine] <<component>>
+}
+
+package "Integration Layer" {
+  [Travel Booking API] <<external>>
+  [Map Service Provider] <<external>>
+  [AI Model Endpoint] <<external>>
+}
+
+package "Persistence Layer" {
+  [User DB] <<database>>
+  [Itinerary DB] <<database>>
+  [Feedback DB] <<database>>
+  [Azure Blob Storage] <<storage>>
+}
+
+' ==== FLOW ====
+
+[Mobile App (.NET MAUI)] --> [API Gateway]
+[Web App (Blazor)] --> [API Gateway]
+
+[API Gateway] --> [UserProfileService]
+[API Gateway] --> [ItineraryService]
+[API Gateway] --> [ExportService]
+[API Gateway] --> [FeedbackService]
+[API Gateway] --> [AIItineraryEngine]
+
+[UserProfileService] --> [User DB]
+[ItineraryService] --> [Itinerary DB]
+[FeedbackService] --> [Feedback DB]
+[ExportService] --> [Azure Blob Storage]
+
+[AIItineraryEngine] --> [Travel Booking API]
+[AIItineraryEngine] --> [Map Service Provider]
+[AIItineraryEngine] --> [AI Model Endpoint]
+[AIItineraryEngine] --> [ItineraryService]
+
+@enduml

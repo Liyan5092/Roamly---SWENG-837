@@ -1,0 +1,76 @@
+@startuml
+skinparam linetype ortho
+skinparam rectangle {
+  BackgroundColor White
+  BorderColor Black
+}
+
+title Roamly - Azure Cloud Deployment Diagram with Design Patterns
+
+' === Clients ===
+rectangle "Client Interface Layer" {
+  actor "Mobile App (.NET MAUI)" as MAUIApp
+  actor "Web App (Blazor)" as WebApp
+}
+
+' === Azure Cloud Environment ===
+node "Azure Cloud" {
+
+  ' ==== Gateway + Firewall ====
+  node "Azure App Gateway + WAF\n<<Proxy>>" as Gateway {
+    [HTTPS Gateway]
+  }
+
+  ' ==== API Gateway ====
+  node "Azure API Management\n<<API Gateway>>" as APIM {
+    [API Gateway]
+  }
+
+  ' ==== Frontend ====
+  node "Azure App Service (Frontend)\n<<MVC>>" as Frontend {
+    [Web UI Hosting]
+  }
+
+  ' ==== Backend ====
+  node "Azure App Service (Backend)\n<<Facade>>" as Backend {
+    component "UserProfileService"
+    component "ItineraryService"
+    component "ExportService\n<<DAO>>"
+    component "FeedbackService"
+    component "AIItineraryEngine"
+  }
+
+  ' ==== Data ====
+  database "User DB" as UserDB
+  database "Itinerary DB" as ItineraryDB
+  database "Feedback DB" as FeedbackDB
+
+  folder "Azure Blob Storage\n(PDFs, Share Links)\n<<DAO>>" as BlobStorage
+
+  ' ==== Monitoring ====
+  component "Azure Monitor\n<<Observer>>" as Monitor
+
+  ' ==== External Systems ====
+  cloud "Travel Booking API\n<<Adapter>>" as TravelAPI
+  cloud "Map Service API\n<<Adapter>>" as MapAPI
+  cloud "AI Model Endpoint\n<<Adapter>>" as AIEngine
+}
+
+' === Connections ===
+MAUIApp --> Gateway : HTTPS (443)
+WebApp --> Gateway : HTTPS (443)
+
+Gateway --> APIM : HTTPS Routing
+APIM --> Frontend : Web UI Requests
+APIM --> Backend : API Calls
+
+Backend --> UserDB
+Backend --> ItineraryDB
+Backend --> FeedbackDB
+Backend --> BlobStorage
+Backend --> TravelAPI
+Backend --> MapAPI
+Backend --> AIEngine
+Backend --> Monitor
+
+@enduml

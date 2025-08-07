@@ -1,0 +1,54 @@
+@startuml
+' Styling for clarity and consistency
+skinparam activity {
+  BackgroundColor White
+  BorderColor Black
+  ArrowColor Black
+}
+skinparam linetype ortho
+skinparam shadowing false
+title Generate AI Itinerary – Activity Diagram (Swimlanes)
+
+|RegisteredTraveler|
+start
+:Enter destination, dates,\nbudget, preferences;
+:Submit form;
+
+|TravelPreferences|
+:Validate preferences;
+:Store preferences;
+
+|AIItineraryEngine|
+:generateItinerary(preferences);
+
+|TravelBookingAPI|
+:getFlights();
+:getHotels();
+
+|MapServiceProvider|
+:getRouteInfo();
+
+|AIItineraryEngine|
+:Assemble itinerary;
+:Return Itinerary;
+
+|RegisteredTraveler|
+:View generated itinerary;
+
+if (User clicks 'Regenerate'?) then (yes)
+  :Submit updated preferences;
+  |AIItineraryEngine|
+  :regenerateItinerary(modifiedPreferences);
+  |TravelBookingAPI|
+  :getFlights();
+  :getHotels();
+  |MapServiceProvider|
+  :getRouteInfo();
+  |AIItineraryEngine|
+  :Assemble new itinerary;
+  |RegisteredTraveler|
+  :View updated itinerary;
+endif
+
+stop
+@enduml

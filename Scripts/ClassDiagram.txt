@@ -1,0 +1,165 @@
+@startuml
+skinparam class {
+    BackgroundColor White
+    BorderColor Black
+    ArrowColor Black
+}
+skinparam linetype ortho
+left to right direction
+skinparam nodesep 100  
+skinparam ranksep 80
+title Roamly - Class Diagram
+
+' ==================== Core User Hierarchy ====================
+class User {
+    userId: string
+    userName: string
+    contactInfo: string
+}
+
+class RegisteredTraveler {
+    +setPreferences()
+    +generateItinerary()
+    +viewItinerary()
+    +editItinerary()
+    +saveItinerary()
+    +exportItinerary()
+}
+
+class GuestTraveler {
+    +setPreferences()
+    +generateItinerary()
+    +viewSampleItinerary()
+}
+
+User <|-- RegisteredTraveler
+User <|-- GuestTraveler
+
+' ==================== Travel Preferences & Companion ====================
+class TravelPreferences {
+    destination: string
+    travelDates: DateRange
+    interests: List<string>
+    budget: double
+    +mergeCompanionPreferences(companions: List<TravelCompanion>)
+}
+
+class TravelCompanion {
+    name: string
+    age: int
+    preferences: TravelPreferences
+}
+
+class DateRange {
+    startDate: date
+    endDate: date
+    +isValid(): boolean
+    +getDuration(): int
+    +includes(date: date): boolean
+}
+
+TravelPreferences "1" --> "1" DateRange : uses
+TravelPreferences "1" --> "0..*" TravelCompanion : includes
+RegisteredTraveler "1" --> "1" TravelPreferences : sets
+
+' ==================== Itinerary & Planning ====================
+class Itinerary {
+    itineraryId: string
+    travelerId: string
+    totalCost: double
+    +editDayPlan(day: int, changes: string)
+    +addNotes(day: int, notes: string)
+}
+
+class DayPlan {
+    dayNumber: int
+}
+
+class Activity {
+    activityId: string
+    title: string
+    location: string
+    time: string
+    cost: double
+    notes: string
+}
+
+Itinerary "1" --> "1..*" DayPlan : includes
+DayPlan "1" --> "1..*" Activity : contains
+
+RegisteredTraveler "1" --> "0..*" Itinerary : owns
+GuestTraveler "1" --> "0..1" Itinerary : receives
+
+' ==================== Exporting ====================
+class ExportRequest {
+    format: string
+    timestamp: datetime
+}
+
+class ExportResult {
+    fileUrl: string
+    format: string
+}
+
+class ExportService <<service>> {
+    +exportAsPDF(itinerary: Itinerary): File
+    +exportAsLink(itinerary: Itinerary): URL
+    +exportAsEmail(itinerary: Itinerary, message: string): boolean
+    +addToCalendar(itinerary: Itinerary): File
+}
+
+ExportRequest "1" --> "1" Itinerary : for
+ExportRequest "1" --> "1" ExportResult : returns
+RegisteredTraveler --> ExportService : uses
+
+' ==================== Feedback & Admin ====================
+class Feedback {
+    feedbackId: string
+    message: string
+    submittedOn: datetime
+}
+
+class Admin {
+    adminId: string
+    role: string
+}
+
+class APIHealthCheck {
+    apiName: string
+    status: string
+    checkedAt: datetime
+    +checkStatus(): boolean
+}
+
+RegisteredTraveler "1" --> "0..*" Feedback : submits
+Admin "1" --> "0..*" Feedback : reviews
+Admin "1" --> "0..*" APIHealthCheck : performs
+
+' ==================== Services ====================
+class TravelBookingAPI {
+    name: string
+    provider: string
+    +getFlights(destination: string): List<string>
+    +getHotels(destination: string): List<string>
+}
+
+class MapServiceProvider {
+    provider: string
+    apiKey: string
+    +getRouteInfo(locations: List<string>): string
+}
+
+class AIItineraryEngine {
+    modelName: string
+    version: string
+    +generateItinerary(preferences: TravelPreferences): Itinerary
+    +regenerateItinerary(modifiedPreferences: TravelPreferences): Itinerary
+}
+
+AIItineraryEngine "1" --> "1..*" Itinerary : generates
+AIItineraryEngine "1" --> "1" TravelBookingAPI : queries
+AIItineraryEngine "1" --> "1" MapServiceProvider : queries
+RegisteredTraveler --> AIItineraryEngine : requests
+GuestTraveler --> AIItineraryEngine : requests
+
+@enduml

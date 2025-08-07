@@ -1,0 +1,49 @@
+@startuml
+left to right direction
+skinparam backgroundColor #ffffff
+skinparam usecase {
+  BackgroundColor #EAF4FF
+  BorderColor #4682B4
+  ArrowColor Black
+}
+skinparam actorStyle awesome
+skinparam shadowing true
+
+' Left: Primary Actors
+  actor "Registered Traveler" as RT #DarkGreen
+  actor "Guest Traveler" as GT #OliveDrab
+  actor "System Administrator" as SA #SeaGreen
+
+
+' Right: Supporting Actors
+  actor "AI Itinerary Engine" as AI #DarkOrange
+  actor "Travel Booking API" as TAPI #GoldenRod
+  actor "Map Service Provider" as MAP #Orange
+
+
+' Center: Roamly System Use Cases
+rectangle "Roamly System" #D0E7FF {
+  usecase "Generate AI Itinerary" as UC1
+  usecase "Save Itinerary" as UC2
+  usecase "Edit Saved Itinerary" as UC3
+  usecase "Export Itinerary" as UC4
+  usecase "System Maintenance" as UC5
+}
+
+' Connections - Primary Actors
+RT --> UC1
+RT --> UC2
+RT --> UC3
+RT --> UC4
+
+GT --> UC1
+
+SA --> UC5
+
+' Connections - Supporting Actors
+UC1 --> AI
+UC1 --> TAPI
+UC5 --> TAPI
+UC5 --> MAP
+
+@enduml

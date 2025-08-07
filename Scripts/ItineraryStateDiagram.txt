@@ -1,0 +1,28 @@
+@startuml
+skinparam state {
+  BackgroundColor White
+  BorderColor Black
+  ArrowColor Black
+}
+title Itinerary State Diagram - Roamly
+
+[*] --> New
+
+New --> Generated : generate()
+Generated --> Edited : edit()
+Edited --> Saved : save()
+Generated --> Saved : save()
+
+Saved --> Exported : export(format)
+Exported --> Shared : share()
+
+Edited --> Exported : export(format)
+
+Saved --> Edited : edit()
+Exported --> Edited : edit()
+
+Saved --> Deleted : delete()
+Exported --> Deleted : delete()
+Shared --> Deleted : delete()
+
+@enduml
