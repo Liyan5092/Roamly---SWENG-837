@@ -48,7 +48,7 @@ More detailed explanations are available in the **Design Patterns** section of t
 
 ## 🎥 Video Presentation
 
-🎞️ Slides: [PowerPoint](Powerpoint/Roamly_Presentation.pptx)
+🎞️ Slides: [PowerPoint](Powerpoint/)
 
 ---
 
