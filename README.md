@@ -27,7 +27,7 @@ Modern travelers want personalized trip plans without manually researching every
 | **Sequence Diagrams** | Models how components interact to generate and edit saved itineraries. |
 | **Domain Model** | Visualizes core concepts like User, Itinerary, DayPlan, and TravelPreferences. |
 | **Class Diagram** | Details attributes and methods of all classes (ItineraryService, FeedbackService, etc.). |
-| **State Machine Diagram** | Tracks the lifecycle of an Itinerary (draft → generated → saved → exported). |
+| **State Machine Diagram** | Tracks the lifecycle of an Itinerary (new → generated → saved → exported). |
 | **Component Diagram** | Shows internal architecture: Client apps, Application services, External APIs, and DBs. |
 | **Deployment Diagram** | Depicts how components are deployed on Azure using App Services, Databases, AI endpoints, and Monitoring tools. |
 
