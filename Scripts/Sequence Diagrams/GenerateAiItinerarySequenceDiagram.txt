@@ -1,0 +1,59 @@
+@startuml
+skinparam sequence {
+  ArrowColor Black
+  ActorBorderColor Black
+  LifeLineBorderColor Black
+  LifeLineBackgroundColor White
+  ParticipantBorderColor Black
+  ParticipantBackgroundColor White
+  BoxBackgroundColor White
+}
+
+title Generate AI Itinerary - Sequence Diagram
+
+actor RegisteredTraveler as RegisteredTraveler
+actor GuestTraveler as GuestTraveler
+participant TravelPreferences as TravelPreferences
+participant AIItineraryEngine as AIItineraryEngine
+participant TravelBookingAPI as TravelBookingAPI
+participant MapServiceProvider as MapServiceProvider
+participant Itinerary as Itinerary
+
+alt Registered Traveler
+  RegisteredTraveler -> TravelPreferences : setPreferences()
+else Guest Traveler
+  GuestTraveler -> TravelPreferences : setPreferences()
+end
+
+TravelPreferences -> AIItineraryEngine : generateItinerary(preferences)
+AIItineraryEngine -> TravelBookingAPI : getFlights()
+AIItineraryEngine -> TravelBookingAPI : getHotels()
+AIItineraryEngine -> MapServiceProvider : getRouteInfo()
+AIItineraryEngine -> Itinerary : buildItinerary()
+Itinerary --> AIItineraryEngine : itinerary
+AIItineraryEngine --> RegisteredTraveler : return(itinerary)
+
+alt User clicks 'Regenerate'
+  RegisteredTraveler -> AIItineraryEngine : regenerateItinerary(modifiedPreferences)
+  AIItineraryEngine -> TravelBookingAPI : getFlights()
+  AIItineraryEngine -> TravelBookingAPI : getHotels()
+  AIItineraryEngine -> MapServiceProvider : getRouteInfo()
+  AIItineraryEngine -> Itinerary : buildItinerary()
+  Itinerary --> AIItineraryEngine : newItinerary
+  AIItineraryEngine --> RegisteredTraveler : return(newItinerary)
+end
+
+alt User requests PDF
+  RegisteredTraveler -> ExportService : exportAsPDF(itinerary)
+end
+
+alt User requests shareable link
+  RegisteredTraveler -> ExportService : exportAsLink(itinerary)
+end
+
+alt Generation Fails
+  AIItineraryEngine -> RegisteredTraveler : returnError("Try again")
+  RegisteredTraveler -> AIItineraryEngine : retryGeneration()
+end
+
+@enduml

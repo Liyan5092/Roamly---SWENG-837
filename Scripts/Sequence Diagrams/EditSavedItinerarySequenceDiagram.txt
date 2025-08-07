@@ -1,0 +1,47 @@
+@startuml
+skinparam sequence {
+  ArrowColor Black
+  ActorBorderColor Black
+  LifeLineBorderColor Black
+  LifeLineBackgroundColor White
+  ParticipantBorderColor Black
+  ParticipantBackgroundColor White
+  BoxBackgroundColor White
+}
+
+title Edit Saved Itinerary - Sequence Diagram
+
+actor RegisteredTraveler as RegisteredTraveler
+participant Itinerary as Itinerary
+participant DayPlan as DayPlan
+participant Activity as Activity
+participant TravelPreferences as TravelPreferences
+
+== Load and Edit Flow ==
+RegisteredTraveler -> Itinerary : selectSavedItinerary(itineraryId)
+Itinerary -> RegisteredTraveler : loadItineraryDetails()
+
+RegisteredTraveler -> Itinerary : enterEditMode()
+
+RegisteredTraveler -> DayPlan : updateDayPlan(dayNumber, newActivities)
+DayPlan -> Activity : updateActivity(activityId, details)
+
+RegisteredTraveler -> TravelPreferences : updatePreferences(newPreferences)
+
+== Save Flow ==
+RegisteredTraveler -> Itinerary : saveChanges()
+
+alt Save as New Version
+  Itinerary -> Itinerary : createNewVersion()
+else Overwrite Existing
+  Itinerary -> Itinerary : updateExistingVersion()
+end
+
+Itinerary --> RegisteredTraveler : confirmSaveSuccess()
+
+== Extension: Add Note ==
+opt User adds notes
+  RegisteredTraveler -> Activity : addNote(noteText)
+end
+
+@enduml

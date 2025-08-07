@@ -1,0 +1,53 @@
+@startuml
+skinparam sequence {
+  ArrowColor Black
+  ActorBorderColor Black
+  LifeLineBorderColor Black
+  LifeLineBackgroundColor White
+  ParticipantBorderColor Black
+  ParticipantBackgroundColor White
+  BoxBackgroundColor White
+}
+
+title System Maintenance - Sequence Diagram
+
+actor Admin as Admin
+participant AdminDashboard as AdminDashboard
+participant APIHealthCheck as APIHealthCheck
+participant TravelBookingAPI as TravelBookingAPI
+participant AIItineraryEngine as AIItineraryEngine
+
+Admin -> AdminDashboard : login()
+AdminDashboard -> Admin : showDashboard()
+
+Admin -> AdminDashboard : accessMonitoringTools()
+AdminDashboard -> APIHealthCheck : getSystemStatus()
+
+APIHealthCheck -> TravelBookingAPI : checkAvailability()
+APIHealthCheck -> AIItineraryEngine : checkAvailability()
+TravelBookingAPI --> APIHealthCheck : returnStatus()
+AIItineraryEngine --> APIHealthCheck : returnStatus()
+APIHealthCheck --> AdminDashboard : systemReport()
+
+Admin -> AdminDashboard : viewErrorLogs()
+Admin -> AdminDashboard : viewHealthMetrics()
+
+alt Admin takes action
+  Admin -> AdminDashboard : restartService() or reportIssue()
+end
+
+alt Admin generates status report
+  Admin -> AdminDashboard : generateStatusReport()
+end
+
+alt Admin schedules maintenance
+  Admin -> AdminDashboard : scheduleMaintenanceWindow()
+  AdminDashboard -> Admin : notifyUsers()
+end
+
+alt API Timeout Detected
+  APIHealthCheck -> AdminDashboard : logTimeoutEvent()
+  AdminDashboard -> Admin : trackSLAFailure()
+end
+
+@enduml

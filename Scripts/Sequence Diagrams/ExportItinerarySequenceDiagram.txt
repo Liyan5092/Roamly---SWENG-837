@@ -1,0 +1,47 @@
+@startuml
+skinparam sequence {
+  ArrowColor Black
+  ActorBorderColor Black
+  LifeLineBorderColor Black
+  LifeLineBackgroundColor White
+  ParticipantBorderColor Black
+  ParticipantBackgroundColor White
+  BoxBackgroundColor White
+}
+
+title Export Itinerary - Sequence Diagram
+
+actor RegisteredTraveler as RT
+participant Itinerary as IT
+participant ExportService as ES
+
+RT -> IT : viewSavedItinerary()
+RT -> IT : clickExport()
+
+IT -> RT : promptExportOptions()
+RT -> IT : selectFormat("PDF | Link | Email | Calendar")
+
+alt PDF Selected
+  IT -> ES : exportAsPDF(itinerary)
+  ES --> IT : pdfFile
+  IT --> RT : provideDownload(pdfFile)
+
+else Shareable Link Selected
+  IT -> ES : exportAsLink(itinerary)
+  ES --> IT : shareableLink (expires in 7 days)
+  IT --> RT : displayLink(shareableLink)
+
+else Email Selected
+  RT -> IT : addEmailMessage(optional)
+  IT -> ES : exportAsEmail(itinerary, message)
+  ES --> IT : confirmationEmailSent
+  IT --> RT : showConfirmation("Email Sent")
+
+else Add to Calendar
+  IT -> ES : exportAsCalendar(itinerary)
+  ES --> IT : calendarFile.ics
+  IT --> RT : download(calendarFile.ics)
+
+end
+
+@enduml
