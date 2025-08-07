@@ -31,7 +31,7 @@ Modern travelers want personalized trip plans without manually researching every
 | **Component Diagram** | Shows internal architecture: Client apps, Application services, External APIs, and DBs. |
 | **Deployment Diagram** | Depicts how components are deployed on Azure using App Services, Databases, AI endpoints, and Monitoring tools. |
 
-> 🗂️ All `.txt` plant uml scripts are in the `/scripts` folder and rendered visuals are in `/images`.
+> 🗂️ All `.txt` plant uml scripts are in the `/Scripts` folder and rendered visuals are in `/Images`.
 
 ---
 
@@ -48,8 +48,7 @@ More detailed explanations are available in the **Design Patterns** section of t
 
 ## 🎥 Video Presentation
 
-📺 [Roamly_Design_Video.mp4](video/Roamly_Design_Video.mp4)  
-🎞️ Slides: [PowerPoint](powerpoint/Roamly_Presentation.pptx)
+🎞️ Slides: [PowerPoint](Powerpoint/Roamly_Presentation.pptx)
 
 ---
 
